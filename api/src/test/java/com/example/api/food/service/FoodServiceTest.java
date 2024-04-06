@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.api.IntegrationTestSupport;
 import com.example.api.food.dto.response.FoodDetailResponse;
-import com.example.api.global.exception.CustomErrorCode;
+import com.example.api.global.exception.ErrorCode;
 import com.example.api.global.exception.RestApiException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +71,7 @@ class FoodServiceTest extends IntegrationTestSupport {
 
         assertThatThrownBy(() -> foodService.findFood(foodName, researchYear, makerName, foodCode))
             .isInstanceOf(RestApiException.class)
-            .hasMessage(CustomErrorCode.FOOD_NOT_FOUND.name());
+            .hasMessage(ErrorCode.FOOD_NOT_FOUND.getMessage());
     }
 
 }
