@@ -23,14 +23,14 @@ class AntSequenceTest(unittest.TestCase):
         self.assertEqual(solution(n), result)
 
     @parameterized.expand([
-        (1, 1, [1], 1),
-        (2, 1, [1], 11),
-        (3, 1, [1], 21),
-        (4, 1, [1], 1211),
-        (5, 1, [1], 111221),
-        (6, 1, [1], 312211),
-        (7, 1, [1], 13112221),
-        (8, 1, [1], 1113213211),
+        (1, 1, [1], [1]),
+        (2, 1, [1], [1, 1]),
+        (3, 1, [1], [2, 1]),
+        (4, 1, [1], [1, 2, 1, 1]),
+        (5, 1, [1], [1, 1, 1, 2, 2, 1]),
+        (6, 1, [1], [3, 1, 2, 2, 1, 1]),
+        (7, 1, [1], [1, 3, 1, 1, 2, 2, 2, 1]),
+        (8, 1, [1], [1, 1, 1, 3, 2, 1, 3, 2, 1, 1]),
     ])
     def test_make_ant_sequence(self, n, times, ln, result):
         self.assertEqual(make_ant_sequence(n, times, ln), result)
