@@ -3,12 +3,27 @@ import unittest
 from parameterized import parameterized
 
 
-def solution(n):
+def solution(n: int):
     pass
 
 
-def make_ant_sequence(n, times, ln):
-    pass
+def make_ant_sequence(n: int, times: int, ln: list) -> list:
+    if n == times:
+        return ln
+
+    cur, cnt = ln[0], 1
+    new_ln = []
+    for i in range(1, len(ln)):
+        if cur == ln[i]:
+            cnt += 1
+        else:
+            new_ln.append(cnt)
+            new_ln.append(cur)
+            cur, cnt = ln[i], 1
+    new_ln.append(cnt)
+    new_ln.append(cur)
+
+    return make_ant_sequence(n, times + 1, new_ln)
 
 
 class AntSequenceTest(unittest.TestCase):
