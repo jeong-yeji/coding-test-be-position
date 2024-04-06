@@ -5,12 +5,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Table(name = "food")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Food {
 
@@ -54,7 +56,7 @@ public class Food {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String servingSizeUnit;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "total_size_g", columnDefinition = "TEXT")
     private String totalSizeG;
 
     @Column(columnDefinition = "TEXT")
@@ -135,7 +137,7 @@ public class Food {
     @Column(columnDefinition = "TEXT")
     private String betaCarotene;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "vitamin_d3", columnDefinition = "TEXT")
     private String vitaminD3;
 
     @Column(columnDefinition = "TEXT")
@@ -144,10 +146,10 @@ public class Food {
     @Column(columnDefinition = "TEXT")
     private String tocotrienol;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "vitamin_b1", columnDefinition = "TEXT")
     private String vitaminB1;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "vitamin_b2", columnDefinition = "TEXT")
     private String vitaminB2;
 
     @Column(columnDefinition = "TEXT")
@@ -156,10 +158,10 @@ public class Food {
     @Column(columnDefinition = "TEXT")
     private String folate;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "vitamin_b12", columnDefinition = "TEXT")
     private String vitaminB12;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "vitamin_c", columnDefinition = "TEXT")
     private String vitaminC;
 
     @Column(columnDefinition = "TEXT")
