@@ -16,11 +16,6 @@ spring:
   jackson:
     time-zone: Asia/Seoul
 
-  sql:
-    init:
-      mode: always
-
-
 logging:
   level:
     org:
@@ -41,13 +36,16 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    defer-datasource-initialization: true
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  sql:
+    init:
+      platform: mysql
+      mode: always
 ---
 spring:
   config:
@@ -60,9 +58,13 @@ spring:
 
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:~/sakak;MODE=MYSQL
+    url: jdbc:h2:mem:sakak;MODE=MYSQL
     username: sa
     password:
+  sql:
+    init:
+      platform: test
+      mode: always
 
   h2:
     console:
