@@ -3,8 +3,10 @@ import unittest
 from parameterized import parameterized
 
 
-def solution(n: int):
-    pass
+def solution(n: int) -> int:
+    ant_sequence = make_ant_sequence(n, 1, [1])
+    mid = len(ant_sequence) // 2
+    return ant_sequence[mid - 1] * 10 + ant_sequence[mid]
 
 
 def make_ant_sequence(n: int, times: int, ln: list) -> list:
