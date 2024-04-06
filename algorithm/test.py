@@ -27,6 +27,13 @@ class AntSequenceTest(unittest.TestCase):
     def test_make_ant_sequence(self, n, ln, result):
         self.assertEqual(sol1.make_ant_sequence(n, ln), result)
 
+    def test_value_error(self):
+        with self.assertRaises(ValueError):
+            sol1.solution(3)
+
+        with self.assertRaises(ValueError):
+            sol1.solution(100)
+
 
 if __name__ == '__main__':
     unittest.main()
