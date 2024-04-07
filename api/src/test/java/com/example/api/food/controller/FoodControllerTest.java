@@ -1,18 +1,22 @@
 package com.example.api.food.controller;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.api.ControllerTestSupport;
+import com.example.api.food.dto.request.FoodCreateRequest;
 import com.example.api.food.dto.response.FoodDetailResponse;
 import com.example.api.food.service.FoodService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 class FoodControllerTest extends ControllerTestSupport {
@@ -76,7 +80,69 @@ class FoodControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.status").value("OK"))
             .andExpect(jsonPath("$.message").value("식품 정보를 삭제했습니다."))
             .andExpect(jsonPath("$.data").isString());
+    }
 
+    @Test
+    void createFood() throws Exception {
+        FoodCreateRequest request = FoodCreateRequest.builder()
+            .sampleId("SAMPLEAB12")
+            .foodCode("AB12")
+            .dbGroup("음식")
+            .product("품목대표")
+            .foodName("떡볶이")
+            .researchYear("2024")
+            .makerName("동대문엽기떡볶이")
+            .collectionTime("평균")
+            .foodGroup("볶음류")
+            .groupName("떡볶이류")
+            .servingSize("500")
+            .servingSizeUnit("g")
+            .refName("식약처('24)")
+            .organization("식품의약품안전처")
+            .build();
+
+        given(foodService.insertFood(eq(request)))
+            .willReturn(request.foodCode());
+
+        mockMvc.perform(
+                post("/api/v1/foods")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value(HttpStatus.CREATED.value()))
+            .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.name()))
+            .andExpect(jsonPath("$.message").value("식품 정보를 생성했습니다."))
+            .andExpect(jsonPath("$.data").value(request.foodCode()));
+    }
+
+    @Test
+    void createFoodWithMissedValue() throws Exception {
+        FoodCreateRequest request = FoodCreateRequest.builder()
+            .foodCode("AB12")
+            .dbGroup("음식")
+            .product("품목대표")
+            .foodName("떡볶이")
+            .researchYear("2024")
+            .makerName("동대문엽기떡볶이")
+            .collectionTime("평균")
+            .foodGroup("볶음류")
+            .groupName("떡볶이류")
+            .servingSize("500")
+            .servingSizeUnit("g")
+            .refName("식약처('24)")
+            .organization("식품의약품안전처")
+            .build();
+
+        mockMvc.perform(
+                post("/api/v1/foods")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
+            .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
+            .andExpect(jsonPath("$.message").value("SAMPLE ID를 입력해주세요."));
     }
 
 }

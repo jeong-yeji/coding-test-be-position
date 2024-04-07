@@ -3,8 +3,10 @@ package com.example.api.food.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.example.api.IntegrationTestSupport;
+import com.example.api.food.dto.request.FoodCreateRequest;
 import com.example.api.food.dto.response.FoodDetailResponse;
 import com.example.api.global.exception.ErrorCode;
 import com.example.api.global.exception.RestApiException;
@@ -142,6 +144,57 @@ class FoodServiceTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> foodService.deleteFood(foodCode))
             .isInstanceOf(RestApiException.class)
             .hasMessage(ErrorCode.FOOD_NOT_FOUND.getMessage());
+    }
+
+    @Transactional
+    @Test
+    void insertFood() {
+        FoodCreateRequest request = FoodCreateRequest.builder()
+            .sampleId("SAMPLEAB12")
+            .foodCode("AB12")
+            .dbGroup("음식")
+            .product("품목대표")
+            .foodName("떡볶이")
+            .researchYear("2024")
+            .makerName("동대문엽기떡볶이")
+            .collectionTime("평균")
+            .foodGroup("볶음류")
+            .groupName("떡볶이류")
+            .servingSize("500")
+            .servingSizeUnit("g")
+            .refName("식약처('24)")
+            .organization("식품의약품안전처")
+            .build();
+
+        String savedFoodCode = foodService.insertFood(request);
+
+        assertEquals(request.foodCode(), savedFoodCode);
+    }
+
+
+    @Transactional
+    @Test
+    void insertExistFoodCode() {
+        FoodCreateRequest request = FoodCreateRequest.builder()
+            .sampleId("SAMPLEAB12")
+            .foodCode("D000006")
+            .dbGroup("음식")
+            .product("품목대표")
+            .foodName("떡볶이")
+            .researchYear("2024")
+            .makerName("동대문엽기떡볶이")
+            .collectionTime("평균")
+            .foodGroup("볶음류")
+            .groupName("떡볶이류")
+            .servingSize("500")
+            .servingSizeUnit("g")
+            .refName("식약처('24)")
+            .organization("식품의약품안전처")
+            .build();
+
+        assertThatThrownBy(() -> foodService.insertFood(request))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage(ErrorCode.FOOD_ALREADY_EXIST.getMessage());
     }
 
 

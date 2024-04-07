@@ -73,4 +73,32 @@ class FoodRepositoryTest extends IntegrationTestSupport {
         assertTrue(food.isEmpty());
     }
 
+    @Transactional
+    @Test
+    void insertFood() {
+        Food food = Food.builder()
+            .sampleId("SAMPLEAB12")
+            .foodCode("AB12")
+            .dbGroup("음식")
+            .product("품목대표")
+            .foodName("떡볶이")
+            .researchYear("2024")
+            .makerName("동대문엽기떡볶이")
+            .collectionTime("평균")
+            .foodGroup("볶음류")
+            .groupName("떡볶이류")
+            .servingSize("500")
+            .servingSizeUnit("g")
+            .refName("식약처('24)")
+            .organization("식품의약품안전처")
+            .build();
+
+        Food savedFood = foodRepository.save(food);
+
+        Optional<Food> foundFood = foodRepository.findByFoodCode(food.getFoodCode());
+        assertEquals(food.getFoodCode(), savedFood.getFoodCode());
+        assertEquals(food.getFoodCode(), foundFood.get().getFoodCode());
+
+    }
+
 }
