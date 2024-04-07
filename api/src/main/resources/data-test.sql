@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS `food`;
 CREATE TABLE `food` (
-  `id` bigint NOT NULL,
+  `id` bigint NOT NULL auto_increment,
   `sample_id` text NOT NULL,
   `food_code` text NOT NULL,
   `db_group` text NOT NULL,

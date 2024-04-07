@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `food`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `food` (
-  `id` bigint NOT NULL,
+  `id` bigint NOT NULL auto_increment,
   `sample_id` text NOT NULL,
   `food_code` text NOT NULL,
   `db_group` text NOT NULL,
