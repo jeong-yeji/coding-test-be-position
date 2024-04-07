@@ -6,11 +6,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.lang.reflect.Field;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
@@ -18,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Slf4j
 public class Food {
 
     @Id
@@ -320,4 +323,18 @@ public class Food {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String organization;
+
+    public void update(Food newFood) {
+        for (Field field : Food.class.getDeclaredFields()) {
+            try {
+                field.setAccessible(true);
+                Object newValue = field.get(newFood);
+                if (newValue != null) {
+                    field.set(this, newValue);
+                }
+            } catch (IllegalAccessException e) {
+                log.error("수정 중 에러 발생", e);
+            }
+        }
+    }
 }

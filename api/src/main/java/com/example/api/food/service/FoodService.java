@@ -1,11 +1,13 @@
 package com.example.api.food.service;
 
 import com.example.api.food.dto.request.FoodCreateRequest;
+import com.example.api.food.dto.request.FoodUpdateRequest;
 import com.example.api.food.dto.response.FoodDetailResponse;
 import com.example.api.food.entity.Food;
 import com.example.api.food.repository.FoodRepository;
 import com.example.api.global.exception.ErrorCode;
 import com.example.api.global.exception.RestApiException;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,5 +53,18 @@ public class FoodService {
         Food food = request.toEntity();
         Food savedFood = foodRepository.save(food);
         return savedFood.getFoodCode();
+    }
+
+    @Transactional
+    public String updateFood(String foodCode, FoodUpdateRequest request) {
+        if (!Objects.equals(foodCode, request.foodCode())) {
+            throw new RestApiException(ErrorCode.BAD_REQUEST);
+        }
+
+        Food food = foodRepository.findByFoodCode(foodCode)
+            .orElseThrow(() -> new RestApiException(ErrorCode.FOOD_NOT_FOUND));
+
+        food.update(request.toEntity());
+        return food.getFoodCode();
     }
 }
