@@ -41,4 +41,23 @@ class FoodRepositoryTest extends IntegrationTestSupport {
 
         assertTrue(food.isEmpty());
     }
+
+    @Test
+    void getFood() {
+        String foodCode = "D000006";
+
+        Optional<Food> food = foodRepository.findByFoodCode(foodCode);
+
+        assertTrue(food.isPresent());
+        assertEquals(1L, food.get().getId());
+    }
+
+    @Test
+    void getNotExistingFood() {
+        String foodCode = "ABCDEFG";
+
+        Optional<Food> food = foodRepository.findByFoodCode(foodCode);
+
+        assertTrue(food.isEmpty());
+    }
 }

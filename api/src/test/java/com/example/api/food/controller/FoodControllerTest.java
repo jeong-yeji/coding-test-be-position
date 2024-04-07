@@ -1,5 +1,6 @@
 package com.example.api.food.controller;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -33,6 +34,23 @@ class FoodControllerTest extends ControllerTestSupport {
                     .param("research_year", researchYear)
                     .param("maker_name", makerName)
                     .param("food_code", foodCode)
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"))
+            .andExpect(jsonPath("$.data").exists());
+    }
+
+    @Test
+    void readFood() throws Exception {
+        String foodCode = "D000006";
+        given(foodService.getFood(anyString()))
+            .willReturn(FoodDetailResponse.builder().build());
+
+        mockMvc.perform(
+                get("/api/v1/foods/{}", foodCode)
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
             .andExpect(status().isOk())
