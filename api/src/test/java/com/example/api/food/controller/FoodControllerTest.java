@@ -2,6 +2,7 @@ package com.example.api.food.controller;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -58,6 +59,24 @@ class FoodControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.status").value("OK"))
             .andExpect(jsonPath("$.message").value("OK"))
             .andExpect(jsonPath("$.data").exists());
+    }
+
+    @Test
+    void removeFood() throws Exception {
+        String foodCode = "D000006";
+        given(foodService.deleteFood(anyString()))
+            .willReturn(anyString());
+
+        mockMvc.perform(
+                delete("/api/v1/foods/{}", foodCode)
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("식품 정보를 삭제했습니다."))
+            .andExpect(jsonPath("$.data").isString());
+
     }
 
 }

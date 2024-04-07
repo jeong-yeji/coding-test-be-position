@@ -9,6 +9,7 @@ import com.example.api.food.entity.Food;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 class FoodRepositoryTest extends IntegrationTestSupport {
 
@@ -60,4 +61,16 @@ class FoodRepositoryTest extends IntegrationTestSupport {
 
         assertTrue(food.isEmpty());
     }
+
+    @Transactional
+    @Test
+    void deleteFood() {
+        String foodCode = "D000006";
+
+        foodRepository.deleteByFoodCode(foodCode);
+
+        Optional<Food> food = foodRepository.findByFoodCode(foodCode);
+        assertTrue(food.isEmpty());
+    }
+
 }

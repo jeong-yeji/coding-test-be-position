@@ -2,6 +2,7 @@ package com.example.api.food.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.example.api.IntegrationTestSupport;
 import com.example.api.food.dto.response.FoodDetailResponse;
@@ -9,6 +10,7 @@ import com.example.api.global.exception.ErrorCode;
 import com.example.api.global.exception.RestApiException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 class FoodServiceTest extends IntegrationTestSupport {
 
@@ -124,5 +126,23 @@ class FoodServiceTest extends IntegrationTestSupport {
             .isInstanceOf(RestApiException.class)
             .hasMessage(ErrorCode.FOOD_NOT_FOUND.getMessage());
     }
+
+    @Transactional
+    @Test
+    void deleteFood() {
+        String foodCode = "D000006";
+        String deletedFood = foodService.deleteFood(foodCode);
+        assertEquals(foodCode, deletedFood);
+    }
+
+    @Transactional
+    @Test
+    void deleteNotExistingFood() {
+        String foodCode = "ABCDEFG";
+        assertThatThrownBy(() -> foodService.deleteFood(foodCode))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage(ErrorCode.FOOD_NOT_FOUND.getMessage());
+    }
+
 
 }
