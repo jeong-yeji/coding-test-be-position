@@ -30,4 +30,12 @@ public class FoodService {
         food.orElseThrow(() -> new RestApiException(ErrorCode.FOOD_NOT_FOUND));
         return FoodDetailResponse.of(food.get());
     }
+
+    @Transactional
+    public String deleteFood(String foodCode) {
+        foodRepository.findByFoodCode(foodCode)
+            .orElseThrow(() -> new RestApiException(ErrorCode.FOOD_NOT_FOUND));
+        foodRepository.deleteByFoodCode(foodCode);
+        return foodCode;
+    }
 }

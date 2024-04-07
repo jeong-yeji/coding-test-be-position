@@ -10,4 +10,6 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
         String foodName, String researchYear, String makerName, String foodCode);
 
     Optional<Food> findByFoodCode(String foodCode);
+
+    void deleteByFoodCode(String foodCode);
 }

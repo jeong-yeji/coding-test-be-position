@@ -5,6 +5,8 @@ import com.example.api.food.service.FoodService;
 import com.example.api.global.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +35,12 @@ public class FoodController {
     public ApiResponse<FoodDetailResponse> readFood(@PathVariable String foodCode){
         FoodDetailResponse food = foodService.getFood(foodCode);
         return ApiResponse.ok(food);
+    }
+
+    @DeleteMapping("/{foodCode}")
+    public ApiResponse<String> removeFood(@PathVariable String foodCode){
+        String deletedFoodCode = foodService.deleteFood(foodCode);
+        return ApiResponse.of(HttpStatus.OK, "식품 정보를 삭제했습니다.", deletedFoodCode);
     }
 
 }
