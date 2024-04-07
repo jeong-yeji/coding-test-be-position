@@ -6,6 +6,7 @@ import com.example.api.global.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,12 @@ public class FoodController {
         @RequestParam(value = "maker_name", required = true) String makerName,
         @RequestParam(value = "food_code", required = true) String foodCode) {
         FoodDetailResponse food = foodService.findFood(foodName, researchYear, makerName, foodCode);
+        return ApiResponse.ok(food);
+    }
+
+    @GetMapping("/{foodCode}")
+    public ApiResponse<FoodDetailResponse> readFood(@PathVariable String foodCode){
+        FoodDetailResponse food = foodService.getFood(foodCode);
         return ApiResponse.ok(food);
     }
 

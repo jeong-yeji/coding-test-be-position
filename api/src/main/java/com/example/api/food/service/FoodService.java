@@ -24,4 +24,10 @@ public class FoodService {
         food.orElseThrow(() -> new RestApiException(ErrorCode.FOOD_NOT_FOUND));
         return FoodDetailResponse.of(food.get());
     }
+
+    public FoodDetailResponse getFood(String foodCode) {
+        Optional<Food> food = foodRepository.findByFoodCode(foodCode);
+        food.orElseThrow(() -> new RestApiException(ErrorCode.FOOD_NOT_FOUND));
+        return FoodDetailResponse.of(food.get());
+    }
 }

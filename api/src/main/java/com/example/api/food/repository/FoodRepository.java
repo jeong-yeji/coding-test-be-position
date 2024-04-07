@@ -9,4 +9,5 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
     Optional<Food> findByFoodNameAndResearchYearAndMakerNameAndFoodCode(
         String foodName, String researchYear, String makerName, String foodCode);
 
+    Optional<Food> findByFoodCode(String foodCode);
 }
