@@ -59,28 +59,28 @@ public class FoodController {
         return ApiResponse.ok(food);
     }
 
-    @GetMapping("/{foodCode}")
+    @GetMapping("/{food-code}")
     @Operation(summary = "식품영양정보 확인", description = "식품코드가 일치하는 영양성분 정보 제공")
     @ApiResponses(value = {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "요청을 성공적으로 처리했습니다.", content = @Content(schema = @Schema(implementation = FoodDetailResponse.class), mediaType = "application/json")),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청입니다.", content = @Content(mediaType = "application/json")),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "해당 식품영양성분 정보가 존재하지 않습니다.", content = @Content(mediaType = "application/json")),
     })
-    @Parameter(name = "foodCode", description = "식품코드", example = "D000006", required = true, in = ParameterIn.PATH)
-    public ApiResponse<FoodDetailResponse> readFood(@PathVariable String foodCode){
+    @Parameter(name = "food-code", description = "식품코드", example = "D000006", required = true, in = ParameterIn.PATH)
+    public ApiResponse<FoodDetailResponse> readFood(@PathVariable("food-code") String foodCode){
         FoodDetailResponse food = foodService.getFood(foodCode);
         return ApiResponse.ok(food);
     }
 
-    @DeleteMapping("/{foodCode}")
+    @DeleteMapping("/{food-code}")
     @Operation(summary = "식품영양정보 삭제", description = "식품코드가 일치하는 영양성분 정보 삭제")
     @ApiResponses(value = {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "식품 정보를 삭제했습니다.", content = @Content(mediaType = "application/json")),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청입니다.", content = @Content(mediaType = "application/json")),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "해당 식품영양성분 정보가 존재하지 않습니다.", content = @Content(mediaType = "application/json")),
     })
-    @Parameter(name = "foodCode", description = "식품코드", example = "D000006", required = true, in = ParameterIn.PATH)
-    public ApiResponse<String> removeFood(@PathVariable String foodCode){
+    @Parameter(name = "food-code", description = "식품코드", example = "D000006", required = true, in = ParameterIn.PATH)
+    public ApiResponse<String> removeFood(@PathVariable("food-code") String foodCode){
         String deletedFoodCode = foodService.deleteFood(foodCode);
         return ApiResponse.of(HttpStatus.OK, "식품 정보를 삭제했습니다.", deletedFoodCode);
     }
@@ -204,14 +204,14 @@ public class FoodController {
         return ApiResponse.of(HttpStatus.CREATED, "식품 정보를 생성했습니다.", createdFoodCode);
     }
 
-    @PutMapping("/{foodCode}")
+    @PutMapping("/{food-code}")
     @Operation(summary = "식품영양정보 수정", description = "식품 영양성분 정보 수정")
     @ApiResponses(value = {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "식품 정보를 수정했습니다.", content = @Content(mediaType = "application/json")),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청입니다.", content = @Content(mediaType = "application/json")),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "해당 식품영양성분 정보가 존재하지 않습니다.", content = @Content(mediaType = "application/json")),
     })
-    @Parameter(name = "foodCode", description = "식품코드", example = "D000006", required = true, in = ParameterIn.PATH)
+    @Parameter(name = "food-code", description = "식품코드", example = "D000006", required = true, in = ParameterIn.PATH)
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
         examples = {
             @ExampleObject(name = "예시", description = "식품영양정보 수정 예시", value = """
@@ -319,7 +319,7 @@ public class FoodController {
                 """)
         }
     ))
-    public ApiResponse<String> updateFood(@PathVariable String foodCode, @Valid @RequestBody FoodUpdateRequest request){
+    public ApiResponse<String> updateFood(@PathVariable("food-code") String foodCode, @Valid @RequestBody FoodUpdateRequest request){
         String deletedFoodCode = foodService.updateFood(foodCode, request);
         return ApiResponse.of(HttpStatus.OK, "식품 정보를 수정했습니다.", deletedFoodCode);
     }
