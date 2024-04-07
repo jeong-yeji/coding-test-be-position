@@ -4,12 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.example.api.IntegrationTestSupport;
 import com.example.api.food.dto.request.FoodCreateRequest;
+import com.example.api.food.dto.request.FoodUpdateRequest;
 import com.example.api.food.dto.response.FoodDetailResponse;
+import com.example.api.food.entity.Food;
+import com.example.api.food.repository.FoodRepository;
 import com.example.api.global.exception.ErrorCode;
 import com.example.api.global.exception.RestApiException;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +23,9 @@ class FoodServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private FoodService foodService;
+
+    @Autowired
+    private FoodRepository foodRepository;
 
     @Test
     void findFood() {
@@ -171,7 +179,6 @@ class FoodServiceTest extends IntegrationTestSupport {
         assertEquals(request.foodCode(), savedFoodCode);
     }
 
-
     @Transactional
     @Test
     void insertExistFoodCode() {
@@ -197,5 +204,70 @@ class FoodServiceTest extends IntegrationTestSupport {
             .hasMessage(ErrorCode.FOOD_ALREADY_EXIST.getMessage());
     }
 
+    @Transactional
+    @Test
+    void updateFood() {
+        String foodCode = "D000006";
+        FoodUpdateRequest request = FoodUpdateRequest.builder()
+            .foodCode(foodCode)
+            .foodName("불고기꿩")
+            .researchYear("2024")
+            .makerName("서울")
+            .build();
 
+        String updateFoodCode = foodService.updateFood(foodCode, request);
+
+        Optional<Food> updatedFood = foodRepository.findByFoodCode(updateFoodCode);
+        assertTrue(updatedFood.isPresent());
+        assertThat(updatedFood.get())
+            .extracting("foodName", "researchYear", "makerName")
+            .containsExactly("불고기꿩", "2024", "서울");
+    }
+
+    @Transactional
+    @Test
+    void updateFoodWithWrongFoodCode() {
+        String foodCode = "D000006";
+        FoodUpdateRequest request = FoodUpdateRequest.builder()
+            .foodCode("ABCD")
+            .foodName("불고기꿩")
+            .researchYear("2024")
+            .makerName("서울")
+            .build();
+
+        assertThatThrownBy(() -> foodService.updateFood(foodCode, request))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage(ErrorCode.BAD_REQUEST.getMessage());
+    }
+
+    @Transactional
+    @Test
+    void updateNotExistingFood() {
+        String foodCode = "ABCDE";
+        FoodUpdateRequest request = FoodUpdateRequest.builder()
+            .foodCode(foodCode)
+            .foodName("불고기꿩")
+            .researchYear("2024")
+            .makerName("서울")
+            .build();
+
+        assertThatThrownBy(() -> foodService.updateFood(foodCode, request))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage(ErrorCode.FOOD_NOT_FOUND.getMessage());
+    }
+
+    @Transactional
+    @Test
+    void updateFoodWithNoFoodCode() {
+        String foodCode = "D000006";
+        FoodUpdateRequest request = FoodUpdateRequest.builder()
+            .researchYear("2024")
+            .makerName("서울")
+            .collectionTime("평균")
+            .build();
+
+        assertThatThrownBy(() -> foodService.updateFood(foodCode, request))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage(ErrorCode.BAD_REQUEST.getMessage());
+    }
 }

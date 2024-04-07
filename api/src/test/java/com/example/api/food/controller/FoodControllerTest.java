@@ -6,12 +6,14 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.api.ControllerTestSupport;
 import com.example.api.food.dto.request.FoodCreateRequest;
+import com.example.api.food.dto.request.FoodUpdateRequest;
 import com.example.api.food.dto.response.FoodDetailResponse;
 import com.example.api.food.service.FoodService;
 import org.junit.jupiter.api.Test;
@@ -145,4 +147,51 @@ class FoodControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.message").value("SAMPLE ID를 입력해주세요."));
     }
 
+    @Test
+    void updateFood() throws Exception {
+        String foodCode = "D000006";
+        FoodUpdateRequest request = FoodUpdateRequest.builder()
+            .foodCode(foodCode)
+            .foodName("불고기꿩")
+            .researchYear("2024")
+            .makerName("서울")
+            .build();
+
+        given(foodService.updateFood(eq(foodCode), eq(request)))
+            .willReturn(foodCode);
+
+        mockMvc.perform(
+                put("/api/v1/foods/" + foodCode)
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+            .andExpect(jsonPath("$.status").value(HttpStatus.OK.name()))
+            .andExpect(jsonPath("$.message").value("식품 정보를 수정했습니다."))
+            .andExpect(jsonPath("$.data").value(foodCode));
+    }
+
+    @Test
+    void updateFoodNoFoodCode() throws Exception {
+        String foodCode = "D000006";
+        FoodUpdateRequest request = FoodUpdateRequest.builder()
+            .foodName("불고기꿩")
+            .researchYear("2024")
+            .makerName("서울")
+            .build();
+
+        given(foodService.updateFood(eq(foodCode), eq(request)))
+            .willReturn(foodCode);
+
+        mockMvc.perform(
+                put("/api/v1/foods/" + foodCode)
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
+            .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
+            .andExpect(jsonPath("$.message").value("식품코드를 입력해주세요."));
+    }
 }
