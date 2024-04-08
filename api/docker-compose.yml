@@ -2,36 +2,41 @@ version: '3'
 
 services:
   mysql:
-    container_name: sakak_mysql
     image: mysql
-    restart: unless-stopped
-    env_file: .env
-    environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_ROOT_HOST: ${MYSQL_ROOT_HOST}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      TZ: 'Asia/Seoul'
+    container_name: sakak-mysql
+    restart: always
     ports:
       - "3306:3306"
-    volumes:
-      - ./mysql/conf.d:/etc/mysql/conf.d
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     command:
-      - "mysqld"
-      - "--character-set-server=utf8mb4"
-      - "--collation-server=utf8mb4_unicode_ci"
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./database/datadir/:/var/lib/mysql
+      - ./database/init/:/docker_entrypoint-initdb.d/
+    networks:
+      - sakak-network
 
-  application:
-    container_name: spring-boot
-    restart: on-failure
-    env_file: .env
+  spring-boot-app:
     build:
-      context: ./
+      context: .
       dockerfile: Dockerfile
+    container_name: spring-boot-app
+    restart: always
     ports:
       - "8080:8080"
-    environment:
-      DB_URL: jdbc:mysql://localhost:3306/${MYSQL_DATABASE}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-      DB_USERNAME: ${MYSQL_ROOT_HOST}
-      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     depends_on:
       - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/sakak?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - sakak-network
+
+networks:
+  sakak-network:
