@@ -4,19 +4,22 @@
 1. 환경변수 작성
     1. `./src/main/resources/env.yml` 작성
         ```yaml
-        DB_URL: jdbc:mysql://localhost:3306/[DB명]
-        DB_USERNAME: [사용자명]
-        DB_PASSWORD: [비밀번호]
+        MYSQL_USER: [사용자명]
+        MYSQL_PASSWORD: [비밀번호]
+        MYSQL_DATABASE: [DB명]
+        MYSQL_HOST: mysql
         ```
     2. `./.env` 작성
        ```
-        MYSQL_ROOT_PASSWORD=[루트 계정 비밀번호]
-        MYSQL_DATABASE=[DB명]
         MYSQL_USER=[사용자명]
         MYSQL_PASSWORD=[비밀번호]
+        MYSQL_ROOT_PASSWORD=[루트 비밀번호]
+        MYSQL_DATABASE=[DB명]
         ```
 2. 실행하기
     ```bash
+    docker network create sakak-network
+    docker-compose up
     ```
 
 ### 참고 사항
